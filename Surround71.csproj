@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>Surround71</AssemblyName>
+    <RootNamespace>Surround71</RootNamespace>
+    <ApplicationHighDpiMode>SystemAware</ApplicationHighDpiMode>
+    <Version>1.0.0</Version>
+    <Product>PC 7.1 环绕声</Product>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <!-- 程序 LOGO：同时内嵌为资源，供窗口标题栏 / 托盘图标使用 -->
+  <ItemGroup>
+    <EmbeddedResource Include="app.ico" LogicalName="Surround71.app.ico" />
+  </ItemGroup>
+
+  <!-- MIT KEMAR 紧凑 HRIR 数据集，嵌入到程序集中 -->
+  <ItemGroup>
+    <EmbeddedResource Include="hrir\**\*.wav" />
+  </ItemGroup>
+
+</Project>
