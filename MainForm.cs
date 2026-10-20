@@ -1944,8 +1944,32 @@
                 MessageBox.Show("没有记录到原来的默认播放设备。", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+
+            // 原设备可能已经不在场（拔出/禁用）：对不在场的设备设置默认，Windows 会返回"成功"
+            // 但实际默认根本不会切过去。所以先查在场、切完再核实，别给假成功。
+            bool present = false;
+            try
+            {
+                var dev = _en.GetDevice(_savedDefaultId);
+                present = (dev.State & DeviceState.Active) != 0;
+            }
+            catch
+            {
+                present = false;   // GetDevice 抛异常 = 设备已被移除
+            }
+            if (!present)
+            {
+                MessageBox.Show("原默认播放设备当前不在场（未插入或已停用），无法恢复：\n" + _savedDefaultName,
+                    Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             bool ok = PolicyConfig.SetDefaultPlayback(_savedDefaultId);
-            MessageBox.Show((ok ? "已恢复默认播放设备：\n" : "恢复失败：\n") + _savedDefaultName,
+            // Windows 偶尔会"接口返回成功但默认没真的切过去"，再核实一遍
+            bool verified = false;
+            try { verified = _en.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia).ID == _savedDefaultId; }
+            catch { }
+            MessageBox.Show((ok && verified ? "已恢复默认播放设备：\n" : "恢复失败：\n") + _savedDefaultName,
                 Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

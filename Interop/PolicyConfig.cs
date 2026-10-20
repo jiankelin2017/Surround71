@@ -22,7 +22,10 @@ namespace Surround71.Interop
     {
     }
 
-    [Guid("f8679f50-850a-45b4-be53-0e7fe1e5a1b1")]
+    // 注意 IID 不能抄错：f8679f50-850a-41cf-9c72-430f290290c8 才是 IPolicyConfig
+    // （网上流传的 ...-45b4-be53-0e7fe1e5a1b1 是错的，QueryInterface 直接 E_NOINTERFACE，
+    //   导致"切换/恢复默认播放设备"在所有 Windows 上都失败。）
+    [Guid("f8679f50-850a-41cf-9c72-430f290290c8")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     internal interface IPolicyConfig
     {

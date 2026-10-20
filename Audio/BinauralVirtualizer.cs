@@ -225,9 +225,9 @@ namespace Surround71.Audio
                 float g = _speakerGain[spk];
                 if (g == 0f)
                 {
-                    // 仍然要更新历史
+                    // 静音也要把历史刷成"乘过增益(=0)之后"的值，保持与下面的存法一致
                     var pv0 = _prev[spk];
-                    for (int i = 0; i < tail; i++) pv0[i] = _inBlock[i * _spk + spk];
+                    for (int i = 0; i < tail; i++) pv0[i] = 0f;
                     continue;
                 }
 
@@ -252,7 +252,7 @@ namespace Surround71.Audio
                     _yiR[b] += hRre[b] * xi + hRim[b] * xr;
                 }
 
-                for (int i = 0; i < tail; i++) pv[i] = _inBlock[i * _spk + spk];
+                for (int i = 0; i < tail; i++) pv[i] = _inBlock[i * _spk + spk] * g;
             }
 
             _fft.Inverse(_yrL, _yiL);
